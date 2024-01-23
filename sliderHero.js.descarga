@@ -1,0 +1,6 @@
+(function () {
+    var elementExists = document.getElementsByClassName('sliderHeroContainerDiv');
+    if (elementExists) {
+        $('.sliderHeroContainerDiv').slick({dots: true, arrows: true, adaptiveHeight: true, fade: true,});
+    }
+}());

@@ -1,0 +1,95 @@
+// console.log("Carousel loaded.");
+const gap = -135;
+
+const next = ($this, textClosed) => {
+    closeAllDescriptions(textClosed);
+    // console.log($this);
+    const carousel = $this.parentNode.firstChild;
+    const content = carousel.firstChild;
+    let prev = $this.parentNode.childNodes[1];
+    let width = carousel.offsetWidth;
+
+    // console.log(width + gap);
+    carousel.scrollBy(width + gap, 0);
+    if (carousel.scrollWidth !== 0) {
+        prev.style.display = "block";
+    }
+    if (content.scrollWidth - width - gap <= carousel.scrollLeft + width) {
+        $this.style.display = "none";
+    }
+
+    window.addEventListener("resize", e => (width = carousel.offsetWidth));
+}
+
+const prev = ($this, textClosed) => {
+    closeAllDescriptions(textClosed);
+    // console.log($this);
+    const carousel = $this.parentNode.firstChild;
+    const content = carousel.firstChild;
+    let next = $this.parentNode.childNodes[2];
+    let width = carousel.offsetWidth;
+
+    carousel.scrollBy(-(width + gap), 0);
+    // console.log(content.scrollLeft, width,gap);
+    if ((carousel.scrollLeft - width - gap) <= 0) {
+        // console.log("display none");
+        $this.style.left = 0;
+        $this.style.display = "none";
+    }
+    if (!content.scrollWidth - width - gap <= carousel.scrollLeft + width) {
+        next.style.display = "block";
+    }
+
+    window.addEventListener("resize", e => (width = carousel.offsetWidth));
+}
+
+// Toggle del boton ver mas ver menos de cada entrada
+const toggleShowDesc = ($this, textClosed, textOpen) => {
+    let button = $this;
+    let p = $this.parentNode.parentNode.querySelector("p.description-overflow");
+    
+    p.classList.toggle("open");
+    button.textContent = (button.textContent == textClosed) ? textOpen : textClosed;
+
+    const pSelected = $this.parentNode.parentNode.querySelector("p.description-overflow.open");
+    closeAllDescriptions(textClosed, pSelected);
+}
+
+// Cierra todas las descripciones abiertas
+const closeAllDescriptions = (textClosed, pSelected = null) => {
+    let pDescription = document.querySelectorAll("p.description-overflow.open");
+    let btnToggle;
+    // console.log(pDescription);
+    if (pDescription) {
+        pDescription.forEach((element) => {
+            // Cerrar todos los demas parrafos diferentes a los que se ha dado click
+            // Cuando es next o prev, cerrarlos todos (es por eso que pSelected = null)
+            if (pSelected == null || pSelected != element) {
+                element.classList.remove("open");
+                btnToggle = element.parentNode.parentNode.querySelector("button.toggleShow");
+                if (btnToggle) {
+                    btnToggle.textContent = textClosed;
+                }
+            }
+        });
+    }
+}
+
+function countWords(str) {
+    const arr = str.split(' ');
+    return arr.filter(word => word !== '').length;
+}
+
+let pAll = document.querySelectorAll("p.description-overflow");
+let btnToggle;
+pAll.forEach((element) => {
+    // console.log(element.scrollHeight);
+    // console.log(element.clientHeight);
+    // console.log(element.scrollHeight < element.clientHeight);
+    if (element.scrollHeight <= element.clientHeight) {
+        btnToggle = element.parentNode.parentNode.querySelector("button.toggleShow");
+        if (btnToggle) {
+            btnToggle.style.display = "none";
+        }
+    }
+});

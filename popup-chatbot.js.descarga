@@ -1,0 +1,44 @@
+$(document).ready(function () {
+  const conf = $('#popup-configurarion')
+  const showUntil = conf.data('mostrar_hasta')
+  const sleepTime = conf.data('tiempo_retraso')
+  const show = conf.data('activo')
+
+  const parsedDate = Date.parse(showUntil)
+
+  /* alert(
+    JSON.stringify({
+      showUntil,
+      sleepTime,
+      show,
+      parsedDate: parsedDate >= new Date(),
+    }),
+  ) */
+  /**
+   * Para mostrar el popup del chatbot en la pagina de busqueda, NO resultados
+   */
+  const currentPage = window.location.search.substring(1, 3);
+  if (currentPage == "s=") {
+    setTimeout(function () {
+      $('#popup-ery').show()
+      localStorage.setItem('primer_acceso', new Date().toLocaleDateString())
+    }, sleepTime * 1000)
+  }
+
+  if (show > 0) {
+    if (parsedDate >= new Date()) {
+      setTimeout(function () {
+        const isFirstTime = !localStorage.getItem('primer_acceso')
+        if (isFirstTime) {
+          $('#popup-ery').show()
+          localStorage.setItem('primer_acceso', new Date().toLocaleDateString())
+        }
+      }, sleepTime * 1000)
+    }
+  }
+
+  $('.cerrar-ery').click(function () {
+    // Close all open windows
+    $('#popup-ery').css('display', 'none')
+  })
+})
